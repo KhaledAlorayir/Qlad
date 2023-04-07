@@ -4,4 +4,4 @@
   export let data: PageData;
 </script>
 
-<h1>{JSON.stringify(data.test)}</h1>
+<h1 class="text-center text-xs text-red-500">{JSON.stringify(data.test)}</h1>
