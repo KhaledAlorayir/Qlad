@@ -27,13 +27,7 @@ CREATE TABLE IF NOT EXISTS "questions" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"text" text NOT NULL,
 	"user_id" uuid NOT NULL,
-	"question_type_id" uuid NOT NULL,
 	"createdAt" timestamp DEFAULT now()
-);
-
-CREATE TABLE IF NOT EXISTS "question_types" (
-	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
-	"text" text NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS "quizzes" (
@@ -85,12 +79,6 @@ END $$;
 
 DO $$ BEGIN
  ALTER TABLE "questions" ADD CONSTRAINT "questions_user_id_quizzes_id_fk" FOREIGN KEY ("user_id") REFERENCES "quizzes"("id") ON DELETE no action ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
-
-DO $$ BEGIN
- ALTER TABLE "questions" ADD CONSTRAINT "questions_question_type_id_question_types_id_fk" FOREIGN KEY ("question_type_id") REFERENCES "question_types"("id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;

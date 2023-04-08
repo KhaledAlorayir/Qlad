@@ -85,27 +85,19 @@ export const Quiz = pgTable("quizzes", {
   submissionLimit: integer("submission_limit"),
 });
 
-export const QuestionType = pgTable("question_types", {
-  id: uuid("id").primaryKey().defaultRandom().notNull(),
-  type: text("text").notNull(),
-});
-
 export const Question = pgTable("questions", {
   id: uuid("id").primaryKey().defaultRandom().notNull(),
   content: text("text").notNull(),
-  quizId: uuid("user_id")
+  quizId: uuid("quizId")
     .notNull()
     .references(() => Quiz.id),
-  questionTypeId: uuid("question_type_id")
-    .notNull()
-    .references(() => QuestionType.id),
   createdAt: timestamp("createdAt").defaultNow(),
 });
 
 export const Submission = pgTable("submissions", {
   id: uuid("id").primaryKey().defaultRandom().notNull(),
   createdAt: timestamp("createdAt").defaultNow(),
-  quizId: uuid("user_id")
+  quizId: uuid("quizId")
     .notNull()
     .references(() => Quiz.id),
 });

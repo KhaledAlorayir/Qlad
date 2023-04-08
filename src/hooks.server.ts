@@ -8,4 +8,13 @@ export const handle = SvelteKitAuth({
   // @ts-ignore
   providers: [Discord({ clientId: DISCORD_ID, clientSecret: DISCORD_SECRET })],
   adapter: drizzleAdapter,
+  callbacks: {
+    session: ({ session, user }) => {
+      if (session.user) {
+        session.user.id = user.id;
+      }
+      session.user?.name;
+      return session;
+    },
+  },
 });
