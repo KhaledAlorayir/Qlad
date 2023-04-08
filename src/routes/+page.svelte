@@ -1,7 +1,17 @@
 <script lang="ts">
-  import type { PageData } from "./$types";
-
-  export let data: PageData;
+  import { signIn, signOut } from "@auth/sveltekit/client";
+  import { page } from "$app/stores";
 </script>
 
-<h1 class="text-center text-xs text-red-500">{JSON.stringify(data.test)}</h1>
+<button
+  on:click={() => {
+    signIn("discord");
+  }}>CLICK</button
+>
+
+<button
+  on:click={() => {
+    signOut();
+  }}>LOGOUT</button
+>
+<h2>{JSON.stringify($page.data.session)}</h2>
