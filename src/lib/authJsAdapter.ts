@@ -1,6 +1,6 @@
 import type { Adapter } from "@auth/core/adapters";
-import { db } from "./client";
-import { User, Account, Session } from "./schema";
+import { db } from "./db/client";
+import { User, Account, Session } from "./db/schema";
 import { and, eq } from "drizzle-orm/expressions";
 
 export const drizzleAdapter: Adapter = {

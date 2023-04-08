@@ -5,8 +5,10 @@ import {
   uuid,
   uniqueIndex,
   bigint,
+  integer,
 } from "drizzle-orm/pg-core";
 
+// AuthJs
 export const User = pgTable(
   "users",
   {
@@ -71,3 +73,51 @@ export const Account = pgTable(
     ),
   })
 );
+//
+
+export const Quiz = pgTable("quizzes", {
+  id: uuid("id").primaryKey().defaultRandom().notNull(),
+  title: text("text").notNull(),
+  createdAt: timestamp("createdAt").defaultNow(),
+  userId: uuid("user_id")
+    .notNull()
+    .references(() => User.id),
+  submissionLimit: integer("submission_limit"),
+});
+
+export const QuestionType = pgTable("question_types", {
+  id: uuid("id").primaryKey().defaultRandom().notNull(),
+  type: text("text").notNull(),
+});
+
+export const Question = pgTable("questions", {
+  id: uuid("id").primaryKey().defaultRandom().notNull(),
+  content: text("text").notNull(),
+  quizId: uuid("user_id")
+    .notNull()
+    .references(() => Quiz.id),
+  questionTypeId: uuid("question_type_id")
+    .notNull()
+    .references(() => QuestionType.id),
+  createdAt: timestamp("createdAt").defaultNow(),
+});
+
+export const Submission = pgTable("submissions", {
+  id: uuid("id").primaryKey().defaultRandom().notNull(),
+  createdAt: timestamp("createdAt").defaultNow(),
+  quizId: uuid("user_id")
+    .notNull()
+    .references(() => Quiz.id),
+});
+
+export const Answer = pgTable("answers", {
+  id: uuid("id").primaryKey().defaultRandom().notNull(),
+  content: text("text").notNull(),
+  createdAt: timestamp("createdAt").defaultNow(),
+  questionId: uuid("question_id")
+    .notNull()
+    .references(() => Question.id),
+  submissionId: uuid("submission_id")
+    .notNull()
+    .references(() => Submission.id),
+});

@@ -1,7 +1,7 @@
 import { SvelteKitAuth } from "@auth/sveltekit";
 import Discord from "@auth/core/providers/discord";
 import { DISCORD_ID, DISCORD_SECRET } from "$env/static/private";
-import { drizzleAdapter } from "$lib/db/authJsAdapter";
+import { drizzleAdapter } from "$lib/authJsAdapter";
 
 export const handle = SvelteKitAuth({
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
