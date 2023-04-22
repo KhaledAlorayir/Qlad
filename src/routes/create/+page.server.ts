@@ -1,13 +1,14 @@
 import { CreateQuizSchema } from "$lib/schema";
 import { AuthenticatePage } from "$lib/helpers/authenticate.js";
+import { parseZodError } from "$lib/helpers/parseZodError";
 import type { Actions } from "./$types";
 import { insertQuizWithQuestions } from "$lib/crud";
-import { error, redirect } from "@sveltejs/kit";
+import { fail, redirect } from "@sveltejs/kit";
 
 export async function load({ locals }) {
   await AuthenticatePage(locals);
 }
-``;
+
 export const actions = {
   default: async ({ request, locals }) => {
     const userId = await AuthenticatePage(locals);
@@ -28,9 +29,9 @@ export const actions = {
         : null,
       questions,
     });
+
     if (!validated.success) {
-      //return vali errors
-      throw error(400);
+      return fail(400, { issues: parseZodError(validated.error.issues) });
     }
 
     await insertQuizWithQuestions(validated.data, userId);

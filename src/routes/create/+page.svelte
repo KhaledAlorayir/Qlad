@@ -1,4 +1,7 @@
 <script lang="ts">
+  import type { ActionData } from "./$types";
+
+  export let form: ActionData;
   let questions: string[] = [""];
 
   function addHandler() {
@@ -17,6 +20,18 @@
 </script>
 
 <main class="py-12">
+  {#if form?.issues}
+    <aside class="alert variant-ghost max-w-xl mx-auto my-8">
+      <div class="alert-message">
+        <h3>Error</h3>
+        <ul>
+          {#each form.issues as issue, i (i)}
+            <li>{issue}</li>
+          {/each}
+        </ul>
+      </div>
+    </aside>
+  {/if}
   <form class="max-w-xl mx-auto flex flex-col gap-y-10 items-end" method="post">
     <input
       class="input"

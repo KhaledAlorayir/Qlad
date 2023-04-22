@@ -15,7 +15,9 @@ export const User = pgTable(
     id: uuid("id").primaryKey().defaultRandom().notNull(),
     name: text("name"),
     email: text("email").notNull(),
-    emailVerified: timestamp("email_verified", { withTimezone: true }),
+    emailVerified: timestamp("email_verified", {
+      withTimezone: true,
+    }),
     image: text("image"),
   },
   (User) => ({
@@ -78,7 +80,7 @@ export const Account = pgTable(
 export const Quiz = pgTable("quizzes", {
   id: uuid("id").primaryKey().defaultRandom().notNull(),
   title: text("text").notNull(),
-  createdAt: timestamp("createdAt").defaultNow(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
   userId: uuid("user_id")
     .notNull()
     .references(() => User.id),
@@ -91,12 +93,12 @@ export const Question = pgTable("questions", {
   quizId: uuid("quizId")
     .notNull()
     .references(() => Quiz.id),
-  createdAt: timestamp("createdAt").defaultNow(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
 
 export const Submission = pgTable("submissions", {
   id: uuid("id").primaryKey().defaultRandom().notNull(),
-  createdAt: timestamp("createdAt").defaultNow(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
   quizId: uuid("quizId")
     .notNull()
     .references(() => Quiz.id),
@@ -105,7 +107,7 @@ export const Submission = pgTable("submissions", {
 export const Answer = pgTable("answers", {
   id: uuid("id").primaryKey().defaultRandom().notNull(),
   content: text("text").notNull(),
-  createdAt: timestamp("createdAt").defaultNow(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
   questionId: uuid("question_id")
     .notNull()
     .references(() => Question.id),

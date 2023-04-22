@@ -9,7 +9,8 @@
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
     "lint": "eslint .",
-    "migrate": "npx drizzle-kit generate:pg --out src/lib/db/migrations --schema src/lib/db/schema.ts"
+    "migrate": "npx drizzle-kit generate:pg --out src/lib/db/migrations --schema src/lib/db/schema.ts",
+    "push": "npx ts-node src/lib/db/applyMigrations.ts "
   },
   "devDependencies": {
     "@skeletonlabs/skeleton": "^1.1.0",
@@ -37,6 +38,7 @@
   "dependencies": {
     "@auth/core": "^0.5.1",
     "@auth/sveltekit": "^0.3.0",
+    "dayjs": "^1.11.7",
     "dotenv": "^16.0.3",
     "drizzle-orm": "^0.23.6",
     "pg": "^8.10.0",

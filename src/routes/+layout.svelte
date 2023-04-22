@@ -10,7 +10,7 @@
   <svelte:fragment slot="header">
     <Navbar />
   </svelte:fragment>
-  <main class="h-full container mx-auto">
+  <main class="h-full container mx-auto px-4">
     <slot />
   </main>
 </AppShell>

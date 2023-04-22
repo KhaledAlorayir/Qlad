@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS "accounts" (
 CREATE TABLE IF NOT EXISTS "answers" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"text" text NOT NULL,
-	"createdAt" timestamp DEFAULT now(),
+	"createdAt" timestamp DEFAULT now() NOT NULL,
 	"question_id" uuid NOT NULL,
 	"submission_id" uuid NOT NULL
 );
@@ -26,14 +26,14 @@ CREATE TABLE IF NOT EXISTS "answers" (
 CREATE TABLE IF NOT EXISTS "questions" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"text" text NOT NULL,
-	"user_id" uuid NOT NULL,
-	"createdAt" timestamp DEFAULT now()
+	"quizId" uuid NOT NULL,
+	"createdAt" timestamp DEFAULT now() NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS "quizzes" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"text" text NOT NULL,
-	"createdAt" timestamp DEFAULT now(),
+	"createdAt" timestamp DEFAULT now() NOT NULL,
 	"user_id" uuid NOT NULL,
 	"submission_limit" integer
 );
@@ -47,8 +47,8 @@ CREATE TABLE IF NOT EXISTS "sessions" (
 
 CREATE TABLE IF NOT EXISTS "submissions" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
-	"createdAt" timestamp DEFAULT now(),
-	"user_id" uuid NOT NULL
+	"createdAt" timestamp DEFAULT now() NOT NULL,
+	"quizId" uuid NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS "users" (
@@ -78,7 +78,7 @@ EXCEPTION
 END $$;
 
 DO $$ BEGIN
- ALTER TABLE "questions" ADD CONSTRAINT "questions_user_id_quizzes_id_fk" FOREIGN KEY ("user_id") REFERENCES "quizzes"("id") ON DELETE no action ON UPDATE no action;
+ ALTER TABLE "questions" ADD CONSTRAINT "questions_quizId_quizzes_id_fk" FOREIGN KEY ("quizId") REFERENCES "quizzes"("id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -96,7 +96,7 @@ EXCEPTION
 END $$;
 
 DO $$ BEGIN
- ALTER TABLE "submissions" ADD CONSTRAINT "submissions_user_id_quizzes_id_fk" FOREIGN KEY ("user_id") REFERENCES "quizzes"("id") ON DELETE no action ON UPDATE no action;
+ ALTER TABLE "submissions" ADD CONSTRAINT "submissions_quizId_quizzes_id_fk" FOREIGN KEY ("quizId") REFERENCES "quizzes"("id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;

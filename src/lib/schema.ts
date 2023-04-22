@@ -6,4 +6,6 @@ export const CreateQuizSchema = z.object({
   questions: z.array(z.string().trim().min(1).max(100)).max(15),
 });
 
+export const PaginationParamsSchema = z.coerce.number().min(1);
+
 export type CreateQuizSchema = z.infer<typeof CreateQuizSchema>;

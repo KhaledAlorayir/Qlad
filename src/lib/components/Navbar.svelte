@@ -6,7 +6,7 @@
 
 <AppBar>
   <svelte:fragment slot="lead">
-    <h2>Qlad</h2>
+    <h2><a href="/">Qlad</a></h2>
   </svelte:fragment>
   <svelte:fragment slot="trail">
     {#if !$page.data.session}

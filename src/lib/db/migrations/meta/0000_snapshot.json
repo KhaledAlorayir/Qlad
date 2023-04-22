@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "pg",
-  "id": "fcbbdd5a-fcd5-4731-8bc3-c2d87fc76187",
+  "id": "2e8fa60f-d672-4df7-9c31-f16b4f8a4176",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "accounts": {
@@ -142,7 +142,7 @@
           "name": "createdAt",
           "type": "timestamp",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "default": "now()"
         },
         "question_id": {
@@ -206,8 +206,8 @@
           "primaryKey": false,
           "notNull": true
         },
-        "user_id": {
-          "name": "user_id",
+        "quizId": {
+          "name": "quizId",
           "type": "uuid",
           "primaryKey": false,
           "notNull": true
@@ -216,18 +216,18 @@
           "name": "createdAt",
           "type": "timestamp",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "default": "now()"
         }
       },
       "indexes": {},
       "foreignKeys": {
-        "questions_user_id_quizzes_id_fk": {
-          "name": "questions_user_id_quizzes_id_fk",
+        "questions_quizId_quizzes_id_fk": {
+          "name": "questions_quizId_quizzes_id_fk",
           "tableFrom": "questions",
           "tableTo": "quizzes",
           "columnsFrom": [
-            "user_id"
+            "quizId"
           ],
           "columnsTo": [
             "id"
@@ -259,7 +259,7 @@
           "name": "createdAt",
           "type": "timestamp",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "default": "now()"
         },
         "user_id": {
@@ -364,11 +364,11 @@
           "name": "createdAt",
           "type": "timestamp",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "default": "now()"
         },
-        "user_id": {
-          "name": "user_id",
+        "quizId": {
+          "name": "quizId",
           "type": "uuid",
           "primaryKey": false,
           "notNull": true
@@ -376,12 +376,12 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "submissions_user_id_quizzes_id_fk": {
-          "name": "submissions_user_id_quizzes_id_fk",
+        "submissions_quizId_quizzes_id_fk": {
+          "name": "submissions_quizId_quizzes_id_fk",
           "tableFrom": "submissions",
           "tableTo": "quizzes",
           "columnsFrom": [
-            "user_id"
+            "quizId"
           ],
           "columnsTo": [
             "id"
