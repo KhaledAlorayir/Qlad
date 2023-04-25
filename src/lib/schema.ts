@@ -5,7 +5,10 @@ export const CreateQuizSchema = z.object({
   submissionLimit: z.coerce.number().positive().optional().nullable(),
   questions: z.array(z.string().trim().min(1).max(100)).max(15),
 });
+export type CreateQuizSchema = z.infer<typeof CreateQuizSchema>;
 
 export const PaginationParamsSchema = z.coerce.number().min(1);
 
-export type CreateQuizSchema = z.infer<typeof CreateQuizSchema>;
+export const QuizIdParamsSchema = z.object({
+  quizId: z.string().uuid(),
+});

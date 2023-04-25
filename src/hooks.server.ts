@@ -13,7 +13,6 @@ export const handle = SvelteKitAuth({
       if (session.user) {
         session.user.id = user.id;
       }
-      session.user?.name;
       return session;
     },
   },

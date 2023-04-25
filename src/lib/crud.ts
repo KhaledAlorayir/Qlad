@@ -4,7 +4,7 @@ import type { CreateQuizSchema } from "$lib/schema";
 import { sql } from "drizzle-orm";
 import { and, desc, eq } from "drizzle-orm/expressions";
 
-const PAGE_SIZE = 20;
+const PAGE_SIZE = 4;
 
 export async function insertQuizWithQuestions(
   data: CreateQuizSchema,
@@ -64,4 +64,13 @@ export async function getUserQuizzes(userId: string, page = 1) {
     pagesCount,
     page: 0,
   };
+}
+
+export async function getQuiz(quizId: string) {
+  const [quiz] = await db.select().from(Quiz).where(eq(Quiz.id, quizId));
+  return quiz;
+}
+
+export async function deleteQuiz(quizId: string) {
+  await db.delete(Quiz).where(eq(Quiz.id, quizId));
 }

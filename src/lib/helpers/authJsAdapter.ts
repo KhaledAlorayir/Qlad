@@ -81,6 +81,7 @@ export const drizzleAdapter: Adapter = {
       .from(Session)
       .fullJoin(User, eq(User.id, Session.userId))
       .where(eq(Session.sessionToken, sessionToken));
+
     return result && result.sessions && result.users
       ? {
           session: result.sessions,
@@ -89,17 +90,19 @@ export const drizzleAdapter: Adapter = {
       : null;
   },
   updateSession: async ({ sessionToken, expires, userId }) => {
-    const [updated] = await db
-      .update(Session)
-      .set({
-        sessionToken,
-        expires,
-        userId,
-      })
-      .where(eq(Session.sessionToken, sessionToken))
-      .returning();
-
-    return updated;
+    if (sessionToken && expires && userId) {
+      const [updated] = await db
+        .update(Session)
+        .set({
+          sessionToken,
+          expires,
+          userId,
+        })
+        .where(eq(Session.sessionToken, sessionToken))
+        .returning();
+      return updated;
+    }
+    return null;
   },
   deleteSession: async (sessionToken) => {
     const [deleted] = await db

@@ -21,10 +21,17 @@
         >GO</a
       >
       {#if quiz.userId === $page.data.session?.user?.id}
-        <a
-          href={`/quiz/${quiz.id}/delete`}
-          class="btn btn-sm variant-filled-surface">DELETE</a
-        >
+        <form method="POST" action="/?/delete" class="inline-block">
+          <input type="hidden" name="quizId" value={quiz.id} />
+          <input
+            type="hidden"
+            name="page"
+            value={$page.url.searchParams.get("page")}
+          />
+          <button type="submit" class="btn btn-sm variant-filled-surface"
+            >DELETE</button
+          >
+        </form>
       {/if}
     </div>
   </footer>

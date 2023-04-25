@@ -92,7 +92,7 @@ export const Question = pgTable("questions", {
   content: text("text").notNull(),
   quizId: uuid("quizId")
     .notNull()
-    .references(() => Quiz.id),
+    .references(() => Quiz.id, { onDelete: "cascade" }),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
 
@@ -101,7 +101,7 @@ export const Submission = pgTable("submissions", {
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   quizId: uuid("quizId")
     .notNull()
-    .references(() => Quiz.id),
+    .references(() => Quiz.id, { onDelete: "cascade" }),
 });
 
 export const Answer = pgTable("answers", {
@@ -110,8 +110,8 @@ export const Answer = pgTable("answers", {
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   questionId: uuid("question_id")
     .notNull()
-    .references(() => Question.id),
+    .references(() => Question.id, { onDelete: "cascade" }),
   submissionId: uuid("submission_id")
     .notNull()
-    .references(() => Submission.id),
+    .references(() => Submission.id, { onDelete: "cascade" }),
 });
