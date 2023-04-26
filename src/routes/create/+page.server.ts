@@ -1,6 +1,6 @@
 import { CreateQuizSchema } from "$lib/schema";
 import { AuthenticatePage } from "$lib/helpers/authenticate.js";
-import { parseZodError } from "$lib/helpers/parseZodError";
+import { parseCreateQuizZodError } from "$lib/helpers/parseZodError";
 import type { Actions } from "./$types";
 import { insertQuizWithQuestions } from "$lib/crud";
 import { fail, redirect } from "@sveltejs/kit";
@@ -31,7 +31,9 @@ export const actions = {
     });
 
     if (!validated.success) {
-      return fail(400, { issues: parseZodError(validated.error.issues) });
+      return fail(400, {
+        issues: parseCreateQuizZodError(validated.error.issues),
+      });
     }
 
     await insertQuizWithQuestions(validated.data, userId);
