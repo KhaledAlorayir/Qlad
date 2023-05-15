@@ -4,6 +4,7 @@
   import "../app.postcss";
   import { AppShell } from "@skeletonlabs/skeleton";
   import Navbar from "$lib/components/Navbar.svelte";
+  import { Toast } from "@skeletonlabs/skeleton";
 </script>
 
 <AppShell>
@@ -13,4 +14,5 @@
   <main class="h-full container mx-auto px-4">
     <slot />
   </main>
+  <Toast />
 </AppShell>

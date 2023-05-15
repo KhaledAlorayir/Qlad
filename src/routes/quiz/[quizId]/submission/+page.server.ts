@@ -20,13 +20,7 @@ export async function load({ params }) {
     throw error(404);
   }
 
-  if (
-    result.quiz.submissionLimit &&
-    result.quiz.submissionsCount >= result.quiz.submissionLimit
-  ) {
-    throw error(400, "submissions has exceeded the allowed limit");
-  }
-  return { ...result };
+  return result;
 }
 
 export const actions = {
@@ -58,8 +52,6 @@ export const actions = {
       throw error(404);
     }
 
-    //test this case
-    //bug here fix it and check seem in load
     if (quiz.submissionLimit && quiz.submissionsCount >= quiz.submissionLimit) {
       return fail(400, {
         message: "submissions has exceeded the allowed limit",

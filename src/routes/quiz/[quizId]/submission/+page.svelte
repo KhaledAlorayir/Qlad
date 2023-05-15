@@ -3,11 +3,18 @@
 
   export let data: PageData;
   export let form: ActionData;
+  let isExceeded =
+    data.quiz.submissionLimit &&
+    data.quiz.submissionsCount >= data.quiz.submissionLimit;
 </script>
 
 {#if form?.success}
   <main class="h-full flex justify-center items-center">
     <h4>answers have been submitted!</h4>
+  </main>
+{:else if isExceeded}
+  <main class="h-full flex justify-center items-center">
+    <h4>submissions has exceeded the allowed limit</h4>
   </main>
 {:else}
   <main class="py-12">
