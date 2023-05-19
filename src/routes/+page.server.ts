@@ -3,7 +3,7 @@ import { PaginationParamsSchema, QuizIdParamsSchema } from "$lib/schema.js";
 import type { Actions } from "./$types";
 import { AuthenticatePage } from "$lib/helpers/authenticate.js";
 import { error, redirect } from "@sveltejs/kit";
-
+//TODO: quiz page with each submission and answers
 export async function load({ locals, url }) {
   const session = await locals.getSession();
   const validated = PaginationParamsSchema.safeParse(

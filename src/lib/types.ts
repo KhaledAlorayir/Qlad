@@ -1,3 +1,5 @@
+import type { InferModel } from "drizzle-orm";
+import type { Quiz, Question, Submission, Answer } from "./db/schema";
 export interface Pagination<T> {
   results: T[];
   pagesCount: number;
