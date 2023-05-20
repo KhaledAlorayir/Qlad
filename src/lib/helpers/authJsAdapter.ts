@@ -1,7 +1,7 @@
 import type { Adapter } from "@auth/core/adapters";
 import { db } from "../db/client";
 import { User, Account, Session } from "../db/schema";
-import { and, eq } from "drizzle-orm/expressions";
+import { and, eq } from "drizzle-orm";
 
 export const drizzleAdapter: Adapter = {
   createUser: async (user) => {

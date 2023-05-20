@@ -1,15 +1,39 @@
-import { getQuizWithSubmissions } from "$lib/crud.js";
-import { QuizIdParamsSchema } from "$lib/schema.js";
+import {
+  getQuiz,
+  getQuizWithSubmissionCount,
+  getSubmissionsWithQuestionsAndAnswers,
+} from "$lib/crud.js";
+import { AuthenticatePage } from "$lib/helpers/authenticate.js";
+import { PaginationParamsSchema, QuizIdParamsSchema } from "$lib/schema.js";
 import { error } from "@sveltejs/kit";
 
-export async function load({ params }) {
-  const validated = QuizIdParamsSchema.safeParse(params);
+export async function load({ params, locals, url }) {
+  const userId = await AuthenticatePage(locals);
+  const validatedParams = QuizIdParamsSchema.safeParse(params);
+  const validatedQuery = PaginationParamsSchema.safeParse(
+    url.searchParams.get("page")
+  );
 
-  if (!validated.success) {
+  if (!validatedParams.success) {
     throw error(400, "invalid id");
   }
-  //create page + make sure quiz exists and own by user
-  const results = await getQuizWithSubmissions(validated.data.quizId);
-  console.log(JSON.stringify(results, null, 2));
-  return {};
+
+  const quiz = await getQuizWithSubmissionCount(validatedParams.data.quizId);
+
+  if (!quiz || quiz.userId !== userId) {
+    throw error(404);
+  }
+
+  const submissions = await getSubmissionsWithQuestionsAndAnswers(
+    validatedParams.data.quizId,
+    validatedQuery.success ? validatedQuery.data : 1
+  );
+  return {
+    quiz,
+    submissions,
+  };
 }
+
+//TODO:
+//1- Add username when submit
+//2- figure out how to number submissions (store inc number db?)

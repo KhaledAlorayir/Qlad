@@ -1,3 +1,4 @@
+import { relations } from "drizzle-orm";
 import {
   pgTable,
   text,
@@ -24,6 +25,10 @@ export const User = pgTable(
     email_unique: uniqueIndex("email_unique").on(User.email),
   })
 );
+
+export const userRelations = relations(User, ({ many }) => ({
+  quizzes: many(Quiz),
+}));
 
 export const Session = pgTable(
   "sessions",
@@ -87,6 +92,15 @@ export const Quiz = pgTable("quizzes", {
   submissionLimit: integer("submission_limit"),
 });
 
+export const quizRelations = relations(Quiz, ({ many, one }) => ({
+  user: one(User, {
+    fields: [Quiz.userId],
+    references: [User.id],
+  }),
+  questions: many(Question),
+  submissions: many(Submission),
+}));
+
 export const Question = pgTable("questions", {
   id: uuid("id").primaryKey().defaultRandom().notNull(),
   content: text("text").notNull(),
@@ -96,6 +110,14 @@ export const Question = pgTable("questions", {
   createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
 
+export const questionRelations = relations(Question, ({ many, one }) => ({
+  quiz: one(Quiz, {
+    fields: [Question.quizId],
+    references: [Quiz.id],
+  }),
+  answers: many(Answer),
+}));
+
 export const Submission = pgTable("submissions", {
   id: uuid("id").primaryKey().defaultRandom().notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
@@ -103,6 +125,14 @@ export const Submission = pgTable("submissions", {
     .notNull()
     .references(() => Quiz.id, { onDelete: "cascade" }),
 });
+
+export const submissionRelations = relations(Submission, ({ many, one }) => ({
+  quiz: one(Quiz, {
+    fields: [Submission.quizId],
+    references: [Quiz.id],
+  }),
+  answers: many(Answer),
+}));
 
 export const Answer = pgTable("answers", {
   id: uuid("id").primaryKey().defaultRandom().notNull(),
@@ -115,3 +145,14 @@ export const Answer = pgTable("answers", {
     .notNull()
     .references(() => Submission.id, { onDelete: "cascade" }),
 });
+
+export const answerRelations = relations(Answer, ({ one }) => ({
+  submission: one(Submission, {
+    fields: [Answer.submissionId],
+    references: [Submission.id],
+  }),
+  Question: one(Question, {
+    fields: [Answer.questionId],
+    references: [Question.id],
+  }),
+}));

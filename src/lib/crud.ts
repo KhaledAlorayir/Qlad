@@ -2,7 +2,7 @@ import { db } from "$lib/db/client";
 import { Quiz, Question, Submission, User, Answer } from "$lib/db/schema";
 import type { CreateQuizSchema, CreateSubmissionSchema } from "$lib/schema";
 import { sql } from "drizzle-orm";
-import { and, desc, eq, inArray } from "drizzle-orm/expressions";
+import { and, desc, eq } from "drizzle-orm";
 import { getValidatedPageAndPageCount } from "./helpers/getPageAndPageCount";
 
 export async function insertQuizWithQuestions(
@@ -23,7 +23,7 @@ export async function insertQuizWithQuestions(
     .values(data.questions.map((q) => ({ content: q, quizId: quiz.id })));
 }
 
-const PAGE_SIZE = 2;
+export const PAGE_SIZE = 2;
 
 export async function getUserQuizzes(userId: string, page = 1) {
   const [result] = await db
@@ -55,7 +55,7 @@ export async function getUserQuizzes(userId: string, page = 1) {
       .orderBy(desc(Quiz.createdAt))
       .limit(PAGE_SIZE)
       .offset((validatedPage - 1) * PAGE_SIZE)
-      .where(and(eq(Quiz.userId, userId)));
+      .where(eq(Quiz.userId, userId));
     return {
       results,
       pagesCount,
@@ -155,7 +155,10 @@ export async function getQuizWithSubmissionCount(quizId: string) {
   return quiz;
 }
 
-export async function getQuizWithSubmissions(quidId: string, page = 1) {
+export async function getSubmissionsWithQuestionsAndAnswers(
+  quidId: string,
+  page = 1
+) {
   const [submissionCount] = await db
     .select({
       count: sql<number>`count(${Submission.id})`,
@@ -170,88 +173,31 @@ export async function getQuizWithSubmissions(quidId: string, page = 1) {
   );
 
   if (submissionCount) {
-    --page;
-    const submissionIds = await db
-      .select({
-        id: Submission.id,
-      })
-      .from(Submission)
-      .where(eq(Submission.quizId, quidId))
-      .limit(PAGE_SIZE)
-      .offset((validatedPage - 1) * PAGE_SIZE);
-
-    const results = await db
-      .select({
-        quiz: {
-          id: Quiz.id,
-          title: Quiz.title,
-          createdAt: Quiz.createdAt,
-          userId: Quiz.userId,
-          submissionLimit: Quiz.submissionLimit,
+    const results = await db.query.Submission.findMany({
+      columns: {
+        id: true,
+      },
+      where: eq(Submission.quizId, quidId),
+      limit: PAGE_SIZE,
+      offset: (validatedPage - 1) * PAGE_SIZE,
+      with: {
+        answers: {
+          columns: {
+            content: true,
+            id: true,
+          },
+          with: {
+            Question: {
+              columns: {
+                content: true,
+              },
+            },
+          },
         },
-        question: {
-          id: Question.id,
-          content: Question.content,
-        },
-        submission: {
-          id: Submission.id,
-          createdAt: Submission.createdAt,
-        },
-        answer: {
-          id: Answer.id,
-          content: Answer.content,
-          questionId: Answer.questionId,
-          submissionId: Answer.submissionId,
-        },
-      })
-      .from(Quiz)
-      .innerJoin(Question, eq(Quiz.id, Question.quizId))
-      .leftJoin(Submission, eq(Quiz.id, Submission.quizId))
-      .innerJoin(
-        Answer,
-        and(
-          eq(Question.id, Answer.questionId),
-          eq(Submission.id, Answer.submissionId)
-        )
-      )
-      .where(
-        and(
-          eq(Quiz.id, quidId),
-          inArray(
-            Submission.id,
-            submissionIds.map(({ id }) => id)
-          )
-        )
-      );
-
-    const answerAndQuestionsGroupedBySubmission = results.reduce<
-      Record<string, { id: string; question: string; answer: string }[]>
-    >((acc, current) => {
-      if (current.submission) {
-        if (!acc[current.submission.id]) {
-          acc[current.submission.id] = [];
-        }
-        acc[current.submission.id].push({
-          answer: current.answer.content,
-          id: current.answer.id,
-          question: current.question.content,
-        });
-      }
-
-      return acc;
-    }, {});
-    const quizWithSubmissions = {
-      quiz: results[0].quiz,
-      submissions: Object.keys(answerAndQuestionsGroupedBySubmission).map(
-        (key) => ({
-          id: key,
-          answers: answerAndQuestionsGroupedBySubmission[key],
-        })
-      ),
-    };
-
+      },
+    });
     return {
-      results: quizWithSubmissions,
+      results,
       pagesCount,
       page: validatedPage,
     };
